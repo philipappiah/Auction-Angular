@@ -28,7 +28,7 @@ export class DetailViewComponent implements OnInit {
     account: ''
   };
 
-  status = '';
+
 
   constructor(private web3Service: Web3Service, private matSnackBar: MatSnackBar, private router: Router, route: ActivatedRoute) {
     console.log('Constructor: ' + web3Service);
@@ -51,7 +51,7 @@ export class DetailViewComponent implements OnInit {
       .then((ActionBidContract) => {
         this.Auction = ActionBidContract;
 
-        //call the get data function in the solidity contract to load items
+       
         this.watchAccount();
         this.getData();
         this.getBidders();
@@ -82,7 +82,7 @@ export class DetailViewComponent implements OnInit {
 
 
   setStatus(status) {
-    //Display toasr message
+    //Display toast message
     this.matSnackBar.open(status, null, { duration: 3000 });
   }
 
@@ -100,7 +100,7 @@ export class DetailViewComponent implements OnInit {
       const auctionContract = await this.Auction.deployed();
 
 
-      //Call the get items method in the contract to display
+      //Call the getItems method in the contract to display
       auctionContract.getItems(this.myId, (error, result) => {
         if (error) {
           console.log(error);
@@ -229,7 +229,7 @@ export class DetailViewComponent implements OnInit {
 
 
 
-      //Call the get items method in the contract to display
+      //Call the getitems method in the contract to display
       let makeBid = await auctionContract.getBidder(itemId, reqAmount, reqHash, { from: this.model.account });
       if (!makeBid) {
         this.setStatus('Transaction failed. Your bid could not be submitted.');
