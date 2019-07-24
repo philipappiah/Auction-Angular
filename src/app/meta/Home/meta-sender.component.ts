@@ -1,5 +1,5 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {Web3Service} from '../../util/web3.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { Web3Service } from '../../util/web3.service';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 
@@ -28,7 +28,7 @@ export class MetaSenderComponent implements OnInit {
 
   status = '';
 
-  constructor(private web3Service: Web3Service, private matSnackBar: MatSnackBar,private router: Router) {
+  constructor(private web3Service: Web3Service, private matSnackBar: MatSnackBar, private router: Router) {
     console.log('Constructor: ' + web3Service);
   }
 
@@ -40,55 +40,55 @@ export class MetaSenderComponent implements OnInit {
         this.Auction = MetaCoinAbstraction;
 
         this.getData();
-        
-        
-          
-        
-        
-       
-      });
-      
-     
 
-    
+
+
+
+
+
+      });
+
+
+
+
     this.watchAccount();
-    
+
   }
 
   watchAccount() {
     this.web3Service.accountsObservable.subscribe((accounts) => {
       this.accounts = accounts;
       this.model.account = accounts[0];
-      
+
     });
   }
 
-  
+
 
   setStatus(status) {
-    this.matSnackBar.open(status, null, {duration: 3000});
+    this.matSnackBar.open(status, null, { duration: 3000 });
   }
 
-  
 
 
 
-  async getData(){
+
+  async getData() {
 
     let len;
     this.setStatus('Page loading... (please wait)');
     try {
-   
 
-    const auctionContract =  await this.Auction.deployed();
+
+      const auctionContract = await this.Auction.deployed();
       auctionContract.getTotalItemslength((error, result) => {
-        if(error){
+        if (error) {
           console.log(error);
-        }else{
+        } else {
           console.log(result);
-          len=result;
+          len = result;
           for (var i = 0; i < len; i++) {
-            auctionContract.getItems(i,(error, result)=> {
+            auctionContract.getItems(i, (error, result) => {
               if (error) {
                 console.log(error);
               } else {
@@ -98,29 +98,29 @@ export class MetaSenderComponent implements OnInit {
                 var pref = "https://ipfs.io/ipfs/";
                 let j = 0;
                 this.myitems.push({
-                  id:result[j],
-                  hash:pref+result[j+1],
-                  price:result[j+2],
-                  description:result[j+3].substr(0,70)
+                  id: result[j],
+                  hash: pref + result[j + 1],
+                  price: result[j + 2],
+                  description: result[j + 3].substr(0, 70)
 
                 });
                 console.log(this.myitems);
 
-                
-                
+
+
               }
             });
-        
 
-            
+
+
           }
         }
-      
-      }); 
-    
 
-      
-     
+      });
+
+
+
+
 
     } catch (e) {
       console.log(e);
@@ -128,7 +128,7 @@ export class MetaSenderComponent implements OnInit {
     }
 
   }
-  
+
 
   async sendCoin() {
     if (!this.Auction) {
@@ -139,7 +139,7 @@ export class MetaSenderComponent implements OnInit {
     const amount = this.model.amount;
     const receiver = this.model.receiver;
 
-    
+
     this.setStatus('Initiating transaction... (please wait)');
     try {
       // const auctionContract = await this.Auction.deployed();
@@ -152,42 +152,42 @@ export class MetaSenderComponent implements OnInit {
       //  let itemhash = "QmXqhwL75kozBEMefd1XpYXMFBjDYHqhSQX3Eo7koPD5kV";
       //   let itemprice = 3;
       //   let itemdescription = "Get this fully cushioned sofa made from the best of materials.";
-      
-      
-    //   const transaction = await auctionContract.addNewItemTolist(itemhash, itemprice, itemdescription,{from:this.model.account});
-
-    //   if (!transaction) {
-    //     this.setStatus('Transaction failed!');
-    //   } else {
-    //     this.setStatus('Transaction complete!');
-    //   }
 
 
-    const auctionContract =  await this.Auction.deployed();
-      auctionContract.getTotalItemslength(function(error, result){
-        if(error){
+      //   const transaction = await auctionContract.addNewItemTolist(itemhash, itemprice, itemdescription,{from:this.model.account});
+
+      //   if (!transaction) {
+      //     this.setStatus('Transaction failed!');
+      //   } else {
+      //     this.setStatus('Transaction complete!');
+      //   }
+
+
+      const auctionContract = await this.Auction.deployed();
+      auctionContract.getTotalItemslength(function (error, result) {
+        if (error) {
           console.log(error);
-        }else{
+        } else {
           console.log(result);
         }
-      }); 
-        
-     
+      });
+
+
 
     } catch (e) {
       console.log(e);
       this.setStatus('Error sending coin; see log.');
     }
 
-    
+
   }
 
 
- 
- 
 
 
 
-  
+
+
+
 
 }

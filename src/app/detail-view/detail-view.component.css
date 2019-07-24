@@ -23,3 +23,12 @@
     margin-top:1%;
     width:30%;
   }
+
+  .mylist{
+    width:33%;
+    margin-left: 33%;
+  }
+
+  mat-list-item{
+    font-size: 5px;
+  }

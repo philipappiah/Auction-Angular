@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MetaSenderComponent} from './Home/meta-sender.component';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MetaSenderComponent } from './Home/meta-sender.component';
 
-import {RouterModule} from '@angular/router';
+import { RouterModule } from '@angular/router';
 import {
   MatButtonModule,
   MatCardModule,
@@ -11,7 +11,7 @@ import {
   MatOptionModule,
   MatSelectModule, MatSnackBarModule
 } from '@angular/material';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   imports: [
@@ -25,7 +25,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     MatSelectModule,
     MatSnackBarModule,
     RouterModule,
-   
+
   ],
   declarations: [MetaSenderComponent],
   exports: [MetaSenderComponent]

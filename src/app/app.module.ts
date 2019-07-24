@@ -13,6 +13,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MetaSenderComponent} from './meta/Home/meta-sender.component';
 import {UtilModule} from './util/util.module';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { SignIn } from './app.component'
+
+
 
 import {
   MatButtonModule,
@@ -21,10 +24,17 @@ import {
   MatInputModule,
   MatToolbarModule,
   MatTableModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatListModule,
+  MatDividerModule,
+  MatIconModule,
+  MatDialogModule,
+  
+
   
   
 } from '@angular/material';
+import { LoginModalComponent } from './login-modal/login-modal.component';
 
 
 const appRoutes: Routes = [
@@ -39,6 +49,9 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     DetailViewComponent,
+    LoginModalComponent,
+    SignIn
+   
     
   
   ],
@@ -63,7 +76,12 @@ const appRoutes: Routes = [
     UtilModule,
     MatTableModule,
     MatPaginatorModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatListModule,
+    MatDividerModule,
+    MatIconModule,
+    MatDialogModule
+    
   
    
     
@@ -71,7 +89,10 @@ const appRoutes: Routes = [
   
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    SignIn
+  ]
 })
 
 

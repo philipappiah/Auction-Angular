@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import contract from 'truffle-contract';
-import {Subject} from 'rxjs';
+import { Subject } from 'rxjs';
 declare let require: any;
 const Web3 = require('web3');
 
@@ -19,7 +19,7 @@ export class Web3Service {
     window.addEventListener('load', (event) => {
       this.bootstrapWeb3();
     });
-    
+
   }
 
   public bootstrapWeb3() {
@@ -42,10 +42,10 @@ export class Web3Service {
       this.web3 = new Web3.providers.HttpProvider('http://localhost:8545');
     }
 
-    
+
     setInterval(() => this.refreshAccounts(), 100);
 
-}
+  }
 
   public async artifactsToContract(artifacts) {
     if (!this.web3) {
@@ -63,8 +63,8 @@ export class Web3Service {
   private refreshAccounts() {
     this.web3.eth.getAccounts((err, accs) => {
       console.log('Refreshing accounts');
-      
-      
+
+
       if (err != null) {
         console.warn('There was an error fetching your accounts.');
         return;
