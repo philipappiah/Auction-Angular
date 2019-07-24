@@ -2,29 +2,9 @@ import { Component, OnInit, ViewChild, AfterViewInit, Directive, } from '@angula
 import { Web3Service } from '../util/web3.service';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { element } from '@angular/core/src/render3';
-
-
-declare let require: any;
 const auction = require('../../../build/contracts/Auction.json');
-const Web3 = require('web3');
-declare let window: any;
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
 
 
 @Component({
