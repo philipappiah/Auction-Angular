@@ -1,0 +1,45 @@
+<div *ngFor="let hero of myitems; "  style="display: inline-block;padding: 10px;margin-left: 2%">
+ 
+
+<mat-card class="example-card">
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title>Base Price: {{hero.price}} ETH</mat-card-title>
+    <mat-card-subtitle style="display: none">{{hero.id}}</mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image src='{{hero.hash}}' alt="Item Image">
+  <mat-card-content>
+    <p>
+      
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+      
+      <a routerLink="/details/{{hero.id}}"  routerLinkActive="active" style="margin-left: 35%"><button mat-button>VIEW</button></a>
+    
+  </mat-card-actions>
+</mat-card> 
+
+</div>
+
+<router-outlet></router-outlet>
+
+
+
+
+
+<!-- <mat-card>
+<mat-card-content>
+    <button mat-button id="send" (click)="sendCoin()">Add Item</button>
+  </mat-card-content>
+</mat-card> -->
+
+<!-- <ul *ngIf="items">
+  <li *ngFor="let user of items">
+    
+    <p>{{ user.first_name}}</p>
+  </li>
+</ul> -->
+
+<p>{{items}}</p>
+

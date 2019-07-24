@@ -1,0 +1,25 @@
+.address-field {
+    width: 400px;
+  }
+  
+  .example-card {
+    max-width: 350px;
+    display: inline-block;
+    
+  
+  }
+  
+  .example-header-image {
+    /* background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg'); */
+    background-size: cover;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .mytable{
+    float:right;
+    margin-top:1%;
+    width:30%;
+  }
