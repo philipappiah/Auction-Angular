@@ -1,13 +1,13 @@
-<div *ngFor="let hero of myitems; " style="display: inline-block;padding: 10px;margin-left: 2%">
+<div *ngFor="let hero of responseData; " style="display: inline-block;padding: 10px;margin-left: 4%">
 
 
   <mat-card class="example-card">
     <mat-card-header>
       <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>Base Price: {{hero.price}} ETH</mat-card-title>
-      <mat-card-subtitle style="display: none">{{hero.id}}</mat-card-subtitle>
+      <mat-card-title style="font-size: 16px;margin-left: -8%">{{hero.name}}</mat-card-title>
+     
     </mat-card-header>
-    <img mat-card-image src='{{hero.hash}}' alt="Item Image">
+    <img mat-card-image src='{{hero.imageUri}}' width="350px" height="250px" alt="Item Image">
     <mat-card-content>
       <p>
 
@@ -15,13 +15,22 @@
     </mat-card-content>
     <mat-card-actions>
 
-      <a routerLink="/details/{{hero.id}}" routerLinkActive="active" style="margin-left: 35%"><button
+      <a routerLink="/details/{{hero.tokenId}}" routerLinkActive="active" style="margin-left: 35%"><button
           mat-button>VIEW</button></a>
 
     </mat-card-actions>
   </mat-card>
 
 </div>
+
+
+
+<!-- <ul *ngIf="responseData">
+    <li *ngFor="let item of responseData">
+      <img [src]="item.imageUri">
+      <p>{{ item.name}}</p>
+    </li>
+  </ul> -->
 
 <router-outlet></router-outlet>
 

@@ -1,11 +1,17 @@
-import { Component, OnInit, ViewChild, AfterViewInit, Directive, } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Web3Service } from '../util/web3.service';
 import { MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+
+declare let require: any;
 const auction = require('../../../build/contracts/Auction.json');
-
-
-
+const myhttpHeaders = new HttpHeaders({
+  'Content-Type': 'application/json',
+  'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgyNzQ4NmYzMzUyM0RGQjMyM2VlNDdlOEU0Mjc5MjY5QmU3MTlFYzZBIiwiZGFwcE5hbWUiOiJDb2xsZWN0aWJsZXNQb0MiLCJzY29wZXMiOiJyZWFkLHdyaXRlIiwiaWF0IjoxNTYzODAwOTMyLCJleHAiOjE1NjYzOTI5MzIsImF1ZCI6IjJiN2MzYmUwLTg1ZjMtMTFlOS1hNjM5LTk3N2JkMWM3MzlmMiIsImlzcyI6IktleUNvbm5lY3QiLCJzdWIiOiIweDI3NDg2ZjMzNTIzREZCMzIzZWU0N2U4RTQyNzkyNjlCZTcxOUVjNkEifQ.nXpKkP7ChI6wQBFN732LQxxLXxd1rjomlh6MZtyhxE0JIGOIsJdch-Xes2la6aXgEpOxpyrAjp7AtvYQ95nmxd9cSyVFQw52I-zM-qJGvzIuOyXBKt9--mTfTKU6abY_GvcF6Nsvn7GPwD719WcLtYilZk3jwzVoMlE1xrewi820uNmFKFYmLM3s5PdOQeEfAy2bmyeV-lH_nQMaFHMWJPKzmwK_prHVRTSGQA24DML1lK7hK8x4nQ5V75AEgoTXquMbptO9VVrejfcAO1p4LDeejvy8Q_dbBRL-NuYLkdM3XRdWJ13ecPwpPtoiOrq_9EjCV7GAOi5LUCDQUbbCZA'
+});
 
 @Component({
   selector: 'app-detail-view',
@@ -13,7 +19,6 @@ const auction = require('../../../build/contracts/Auction.json');
   styleUrls: ['./detail-view.component.css']
 })
 export class DetailViewComponent implements OnInit {
-
   accounts: string[];
   Auction: any;
   myitems = [];
@@ -22,120 +27,67 @@ export class DetailViewComponent implements OnInit {
   myId;
 
 
+  
+  
 
   model = {
-    
     account: ''
   };
 
+  dataModel = [];
+  responseData = [];
+  bidArray = [];
+  highestBid;
 
+  status = '';
 
-  constructor(private web3Service: Web3Service, private matSnackBar: MatSnackBar, private router: Router, route: ActivatedRoute) {
+  constructor(private web3Service: Web3Service, private matSnackBar: MatSnackBar, route: ActivatedRoute, private http: HttpClient) {
     console.log('Constructor: ' + web3Service);
+    //Get id from route parameter
     this.myId = route.snapshot.params['id'];
 
 
   }
 
   ngOnInit(): void {
-    
 
 
+
+
+    this.setStatus('Page is loading... (please wait)');
     console.log('OnInit: ' + this.web3Service);
     console.log(this);
+    this.watchAccount();
+    //console.log(this.getAll());
 
-    console.log(this.myId);
 
-    //Initialize the contract on page load
+    this.getTokenIds();
+
     this.web3Service.artifactsToContract(auction)
-      .then((ActionBidContract) => {
-        this.Auction = ActionBidContract;
-
-       
-        this.watchAccount();
-        this.getData();
+      .then((MetaCoinAbstraction) => {
+        this.Auction = MetaCoinAbstraction;
         this.getBidders();
-
-
-
-
-
 
       });
 
 
 
-
-    this.watchAccount();
-
   }
 
-  watchAccount() {
-    //Get current user's account using web3
-    this.web3Service.accountsObservable.subscribe((accounts) => {
-      this.accounts = accounts;
-      this.model.account = accounts[0];
-
-    });
-  }
-
-
-
+  //Display toast message
   setStatus(status) {
-    //Display toast message
     this.matSnackBar.open(status, null, { duration: 3000 });
   }
 
 
 
-
-
-  async getData() {
-
-
-    this.setStatus('Page loading... (please wait)');
-    try {
-
-
-      const auctionContract = await this.Auction.deployed();
-
-
-      //Call the getItems method in the contract to display
-      auctionContract.getItems(this.myId, (error, result) => {
-        if (error) {
-          console.log(error);
-        } else {
-          //console.log(result);
-
-          //return result;
-
-
-          var pref = "https://ipfs.io/ipfs/";
-          let j = 0;
-
-          //push the object returned from the function call into an array
-          this.myitems.push({
-            id: result[j],
-            hash: pref + result[j + 1],
-            price: result[j + 2],
-            description: result[j + 3].substr(0, 70)
-
-          });
-          //console.log(this.myitems);
-
-
-
-        }
-      });
-
-
-    } catch (e) {
-      console.log(e);
-      this.setStatus('Error sending coin; see log.');
-    }
-
+  //Get current user's account using web3
+  watchAccount() {
+    this.web3Service.accountsObservable.subscribe((accounts) => {
+      this.accounts = accounts;
+      this.model.account = accounts[0];
+    });
   }
-
 
   async getBidders() {
     var len;
@@ -151,47 +103,37 @@ export class DetailViewComponent implements OnInit {
           console.log(error);
         } else {
           len = result;
+          console.log(result);
           for (var i = 0; i < len; i++) {
             auctionContract.getBiddersData(i, (error, result) => {
               if (error) {
                 console.log(error);
               } else {
-                //console.log(result);
+                console.log(result);
                 let j = 0;
                 if (result[j] == this.myId) {
                   this.getBiddersAddress.push({
                     id: result[j],
-                    hash: result[j + 1],
-                    address: result[j + 2],
-                    bidAmount: result[j + 3]
+                    address: result[j + 1],
+
+                    bidAmount: result[j + 2]
 
 
                   });
 
-
-
-
-
                 }
+                this.getBiddersAddress.forEach(elem => {
+                  this.bidArray.push(elem.bidAmount);
+                })
+
+                this.highestBid = Math.max(...this.bidArray);
 
 
-                //console.log(this.getBiddersAddress);
               }
-
-
-
             });
           }
         }
       });
-
-
-
-
-
-
-
-      //Call the get items method in the contract to display
 
     } catch (e) {
       console.log(e);
@@ -199,7 +141,81 @@ export class DetailViewComponent implements OnInit {
     }
   }
 
-  async sendBid() {
+
+
+
+
+
+
+
+
+  getDataLength() {
+
+
+    return this.http.get('https://collectibles-poc-api.herokuapp.com/api/v1/tokens/0x687f9f4f065e763111bcb0e7e301bca3f3e5dce4/available', { headers: myhttpHeaders });
+  }
+
+
+
+
+
+
+
+
+  //Get the token Ids
+  getTokenIds() {
+
+    let len;
+
+    this.getDataLength().subscribe(data => {
+
+      len = data["count"];
+
+
+      console.log(data["count"]);
+
+
+
+      for (let i = 0; i < len; i++) {
+        this.dataModel.push(
+          data["result"][i].tokenId
+
+        )
+      }
+
+
+
+
+
+
+
+
+      this.http.get('https://collectibles-poc-api.herokuapp.com/api/v1/tokens/' + this.myId + '/metadata', { headers: myhttpHeaders })
+        .subscribe((data: { result }) => {
+          console.log(data);
+          this.responseData.push(data.result);
+
+        })
+
+
+
+
+
+
+      //console.log(this.responseData)
+
+
+
+
+    })
+
+
+  }
+
+  //Make a bid on the current item
+  async makeBid() {
+    console.log();
+
     if (!this.Auction) {
       this.setStatus('Auction contract is not loaded, unable to send transaction');
       return;
@@ -207,33 +223,32 @@ export class DetailViewComponent implements OnInit {
 
     this.setStatus('Initiating transaction... (please wait)');
     try {
-      let itemId, itemHash;
-
-      this.myitems.forEach(element => {
-        itemId = element.id;
-        itemHash = element.hash;
 
 
-      });
-      let reqHash = itemHash.substr(21);
       const auctionContract = await this.Auction.deployed();
       let amount = (<HTMLInputElement>document.getElementById('amount')).value;
       let reqAmount = +amount;
-      //alert(amount);
+
+
       if (reqAmount <= 0) {
         alert("Amount must be greater than 0");
+        this.setStatus('Transaction Failed');
+        return;
+      }
+
+      //Check whether user makes a bid less than or equal to the highest bid
+      if (reqAmount <= this.highestBid) {
+        alert("Amount must be greater than the current highest bid");
+        this.setStatus('You must bid higher than the current highest bid.');
         return;
 
       }
 
-
-
-
-      //Call the getitems method in the contract to display
-      let makeBid = await auctionContract.getBidder(itemId, reqAmount, reqHash, { from: this.model.account });
+      //Call the get items method in the contract to display
+      let makeBid = await auctionContract.getBidder(this.myId, amount, { from: window.web3.currentProvider.selectedAddress });
       if (!makeBid) {
-        this.setStatus('Transaction failed. Your bid could not be submitted.');
-        alert('Transaction failed. Your bid could not be submitted.');
+        this.setStatus('Transaction failed. Your bid cannot make a bid which is less the current highest bidder.');
+        alert('Transaction failed. Your bid cannot make a bid which is less the current highest bidder.');
 
       } else {
         alert('Transaction confirmed.');
@@ -249,12 +264,4 @@ export class DetailViewComponent implements OnInit {
   }
 
 
-
-
-
-
-
-
 }
-
-

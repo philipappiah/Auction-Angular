@@ -1,73 +1,89 @@
+<div class="row" style="margin-top:2%">
+  <div class="col-md-4" style="margin-left:5%">
 
 
-<div *ngFor="let hero of myitems; "  style="display: inline-block;padding: 10px;margin-left: 33%">
-    
+    <div *ngFor="let hero of responseData" style="display: inline-block;">
+      <mat-card style="width:80%">
+        <b>Description</b><br>
+        {{hero.description}}<br>
+        
+      </mat-card>
 
-    <mat-card class="example-card">
-      <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>Base Price: {{hero.price}} ETH</mat-card-title>
-        <mat-card-subtitle style="display: none">{{hero.id}}</mat-card-subtitle>
-      </mat-card-header>
-      <img mat-card-image src='{{hero.hash}}' alt="Item Image">
-      <mat-card-content>
-        <p>
-          
-        </p>
-      </mat-card-content>
-      <mat-card-actions>
-          
-          
-       
-        <mat-accordion>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div *ngFor="let hero of responseData; " style="display: inline-block;padding: 10px;">
+
+
+      <mat-card class="example-card">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title style="font-size: 16px;margin-left: -8%">{{hero.name}}</mat-card-title>
+
+        </mat-card-header>
+        <img mat-card-image src='{{hero.imageUri}}' width="350px" height="250px" alt="Item Image">
+        <mat-card-content>
+          <p>
+
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+
+
+
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
                   <button mat-button>PLACE BID</button>
-              </mat-panel-title>
-              <mat-panel-description>
-               
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-        
-            <mat-form-field>
-              <input id="amount" type="number" matInput placeholder="Amount (ETH)">
-            </mat-form-field>
-            <button mat-button color="primary" (click) = "sendBid()">SUBMIT</button>
-            
-          </mat-expansion-panel>
-          
-        </mat-accordion>
-        
-      </mat-card-actions>
-    </mat-card> 
+                </mat-panel-title>
+                <mat-panel-description>
 
+                </mat-panel-description>
+              </mat-expansion-panel-header>
 
-    
+              <mat-form-field>
+                <input id="amount" type="number" matInput placeholder="Amount (ETH)">
+              </mat-form-field>
+              <button mat-button color="primary" (click)="makeBid()">SUBMIT</button>
+              <b>NOTE:<br>You will not be charged the real value of your bid at the moment. We will just take your bid and accept real payment when your are declared a winner.</b>
+
+            </mat-expansion-panel>
+
+          </mat-accordion>
+
+        </mat-card-actions>
+      </mat-card>
     </div>
-<mat-list  class="mylist">
-    <mat-list-item><h5>Bidder</h5> <h5 style="margin-left: 75%">Amount</h5></mat-list-item>
-    <mat-divider></mat-divider>
-  <div *ngFor="let bidders of getBiddersAddress;">
-      <mat-list-item><h5><b>{{bidders.address}}</b></h5>   <h5 style="margin-left:8%"><b>{{bidders.bidAmount}} ETH</b></h5></mat-list-item>
-      <mat-divider></mat-divider>
-    </div>
-      
-</mat-list>
-
-    
+  </div>
 
 
-  
-  
-    <router-outlet></router-outlet>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+  <div class="col-md-4" style="margin-left: -15%">
+    <b style="margin-left:68%">BIDDERS LIST</b><br>
+    <mat-divider style="margin-left:68%;width: 25%"></mat-divider>
+    <mat-list class="mylist">
+
+      <mat-list-item><b style="font-size: 13px;">Bidders</b> <b style="font-size: 13px;margin-left: 220%">Amount</b>
+      </mat-list-item>
+      <mat-divider style="width: 300%"></mat-divider>
+      <div *ngFor="let bidders of getBiddersAddress;">
+        <mat-list-item><b style="font-size: 12px">{{bidders.address}}</b> <b style="margin-left: 15%"><span
+              style="font-size: 12px" matBadge={{bidders.bidAmount}} matBadgeOverlap="false">ETH</span></b>
+        </mat-list-item>
+        <mat-divider style="width: 300%"></mat-divider>
+      </div>
+
+
+    </mat-list>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+<router-outlet></router-outlet>

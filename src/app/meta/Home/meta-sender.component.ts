@@ -2,17 +2,27 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Web3Service } from '../../util/web3.service';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 declare let require: any;
 const auction = require('../../../../build/contracts/Auction.json');
 const Web3 = require('web3');
+
 declare let window: any;
+let accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgyNzQ4NmYzMzUyM0RGQjMyM2VlNDdlOEU0Mjc5MjY5QmU3MTlFYzZBIiwiZGFwcE5hbWUiOiJDb2xsZWN0aWJsZXNQb0MiLCJzY29wZXMiOiJyZWFkLHdyaXRlIiwiaWF0IjoxNTYzODAwOTMyLCJleHAiOjE1NjYzOTI5MzIsImF1ZCI6IjJiN2MzYmUwLTg1ZjMtMTFlOS1hNjM5LTk3N2JkMWM3MzlmMiIsImlzcyI6IktleUNvbm5lY3QiLCJzdWIiOiIweDI3NDg2ZjMzNTIzREZCMzIzZWU0N2U4RTQyNzkyNjlCZTcxOUVjNkEifQ.nXpKkP7ChI6wQBFN732LQxxLXxd1rjomlh6MZtyhxE0JIGOIsJdch-Xes2la6aXgEpOxpyrAjp7AtvYQ95nmxd9cSyVFQw52I-zM-qJGvzIuOyXBKt9--mTfTKU6abY_GvcF6Nsvn7GPwD719WcLtYilZk3jwzVoMlE1xrewi820uNmFKFYmLM3s5PdOQeEfAy2bmyeV-lH_nQMaFHMWJPKzmwK_prHVRTSGQA24DML1lK7hK8x4nQ5V75AEgoTXquMbptO9VVrejfcAO1p4LDeejvy8Q_dbBRL-NuYLkdM3XRdWJ13ecPwpPtoiOrq_9EjCV7GAOi5LUCDQUbbCZA"
+let user = [];
+
+const myhttpHeaders = new HttpHeaders ({
+  'Content-Type': 'application/json',
+  'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgyNzQ4NmYzMzUyM0RGQjMyM2VlNDdlOEU0Mjc5MjY5QmU3MTlFYzZBIiwiZGFwcE5hbWUiOiJDb2xsZWN0aWJsZXNQb0MiLCJzY29wZXMiOiJyZWFkLHdyaXRlIiwiaWF0IjoxNTYzODAwOTMyLCJleHAiOjE1NjYzOTI5MzIsImF1ZCI6IjJiN2MzYmUwLTg1ZjMtMTFlOS1hNjM5LTk3N2JkMWM3MzlmMiIsImlzcyI6IktleUNvbm5lY3QiLCJzdWIiOiIweDI3NDg2ZjMzNTIzREZCMzIzZWU0N2U4RTQyNzkyNjlCZTcxOUVjNkEifQ.nXpKkP7ChI6wQBFN732LQxxLXxd1rjomlh6MZtyhxE0JIGOIsJdch-Xes2la6aXgEpOxpyrAjp7AtvYQ95nmxd9cSyVFQw52I-zM-qJGvzIuOyXBKt9--mTfTKU6abY_GvcF6Nsvn7GPwD719WcLtYilZk3jwzVoMlE1xrewi820uNmFKFYmLM3s5PdOQeEfAy2bmyeV-lH_nQMaFHMWJPKzmwK_prHVRTSGQA24DML1lK7hK8x4nQ5V75AEgoTXquMbptO9VVrejfcAO1p4LDeejvy8Q_dbBRL-NuYLkdM3XRdWJ13ecPwpPtoiOrq_9EjCV7GAOi5LUCDQUbbCZA' 
+});
 @Component({
   selector: 'app-meta-sender',
   templateUrl: './meta-sender.component.html',
   styleUrls: ['./meta-sender.component.css']
 })
 export class MetaSenderComponent implements OnInit {
+  
 
   @Input() public myInputVariable: string;
   accounts: string[];
@@ -26,34 +36,35 @@ export class MetaSenderComponent implements OnInit {
     account: ''
   };
 
+  dataModel=[];
+  responseData = [];
+
   status = '';
 
-  constructor(private web3Service: Web3Service, private matSnackBar: MatSnackBar, private router: Router) {
+  constructor(private web3Service: Web3Service, private matSnackBar: MatSnackBar, private router: Router,private http: HttpClient) {
     console.log('Constructor: ' + web3Service);
   }
 
   ngOnInit(): void {
+    this.setStatus('Page is loading... (please wait)');
     console.log('OnInit: ' + this.web3Service);
     console.log(this);
+    //console.log(this.getAll());
+    let j = 0;
+   
+   this.getTokenIds();
+  
     this.web3Service.artifactsToContract(auction)
       .then((MetaCoinAbstraction) => {
         this.Auction = MetaCoinAbstraction;
 
-        this.getData();
-
-
-
-
-
-
+        
       });
-
-
-
-
     this.watchAccount();
 
   }
+
+
 
   watchAccount() {
     this.web3Service.accountsObservable.subscribe((accounts) => {
@@ -63,72 +74,78 @@ export class MetaSenderComponent implements OnInit {
     });
   }
 
+  
 
+//Get Contract Address
+  async getContractAddress(){
+    const auctionContract = await this.Auction.deployed();
+    return auctionContract.address;
+  }
+
+  ///Get incoming data Length
+  getDataLength() { 
+    
+   
+    return this.http.get('https://collectibles-poc-api.herokuapp.com/api/v1/tokens/0x687f9f4f065e763111bcb0e7e301bca3f3e5dce4/available',{headers:myhttpHeaders});
+    }
+
+  
 
   setStatus(status) {
     this.matSnackBar.open(status, null, { duration: 3000 });
   }
 
 
-
-
-
-  async getData() {
+  getTokenIds() {
 
     let len;
-    this.setStatus('Page loading... (please wait)');
-    try {
+    
+   this.getDataLength().subscribe(data =>{
+   
+    len = data["count"];
 
 
-      const auctionContract = await this.Auction.deployed();
-      auctionContract.getTotalItemslength((error, result) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log(result);
-          len = result;
-          for (var i = 0; i < len; i++) {
-            auctionContract.getItems(i, (error, result) => {
-              if (error) {
-                console.log(error);
-              } else {
-                //console.log(result);
-
-                //return result;
-                var pref = "https://ipfs.io/ipfs/";
-                let j = 0;
-                this.myitems.push({
-                  id: result[j],
-                  hash: pref + result[j + 1],
-                  price: result[j + 2],
-                  description: result[j + 3].substr(0, 70)
-
-                });
-                console.log(this.myitems);
+    console.log(data["count"]);
 
 
+    for(let i = 0; i < len; i++){
+      this.dataModel.push(
+        data["result"][i].tokenId
+  
+      )
+      }
+    
 
-              }
-            });
+      
+      this.dataModel.forEach(el=>{
+       
+      
+      this.http.get('https://collectibles-poc-api.herokuapp.com/api/v1/tokens/'+el+'/metadata',{headers:myhttpHeaders})
+      .subscribe((data: { result } )=>{
+        console.log(data);
+        this.responseData.push(data.result);
+      })
+       
+      })
 
 
+      //console.log(this.responseData)
 
-          }
-        }
+      
 
-      });
-
-
-
-
-
-    } catch (e) {
-      console.log(e);
-      this.setStatus('Error sending coin; see log.');
-    }
-
+     
+    })
+    
+    
   }
 
+
+getData(){
+  this.getTokenIds()
+  
+}
+ 
+ 
 
   async sendCoin() {
     if (!this.Auction) {

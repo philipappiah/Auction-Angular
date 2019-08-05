@@ -1,64 +1,50 @@
 pragma solidity >=0.4.0 <0.6.0;
-pragma experimental ABIEncoderV2;
 
 
-contract Auction {
+import "openzeppelin-solidity/contracts/token/ERC721/IERC721Receiver.sol";
 
-struct bidItems{
-    uint itemId;
-    string itemHash;
+contract Auction is IERC721Receiver {
+uint256[] tokens;
+
+ struct BiddersData {
+    uint256 itemId;  
     address payAddress;
-    uint amountToBePaid;
-   
-}
+    uint bidAmount;
+ }
 
-struct newItems{
-    uint itemId;
-    string itemHash;
-    uint price;
-    string description;
-}
+ BiddersData[] public bidders;
+ uint maxBid;
+ mapping( uint256 => BiddersData)highestAmount;
 
-newItems [] public itemBody;
-bidItems [] public itemData;
-uint id;
-
-
-function addNewItemTolist(string memory itemhash, uint itemprice, string memory itemdescription) public{
-    itemBody.push(newItems(id,itemhash,itemprice,itemdescription));
-    id++;
+function getBidder(uint256 itemid,uint amount) public {  
+    //To be added later when compiled
+      BiddersData storage currentHigh = highestAmount[itemid];
+      require(amount > currentHigh.bidAmount);
+      currentHigh.bidAmount = amount;
+        
+      
+      bidders.push(BiddersData(itemid,msg.sender, amount));  
 }
 
 
-function getItems(uint index) public view  returns(uint, string memory, uint, string memory){
-    return (itemBody[index].itemId,itemBody[index].itemHash,itemBody[index].price,itemBody[index].description);
-}
-
-
-function getBidder(uint itemid,uint amt, string memory itemhash) public{       
-    itemData.push(bidItems(itemid,itemhash,msg.sender, amt));  
-}
-
-
-function getBiddersData(uint index) public view returns (uint,string memory,address,uint){
-    return (itemData[index].itemId,itemData[index].itemHash,itemData[index].payAddress,itemData[index].amountToBePaid);
+function getBiddersData(uint index) public view returns (uint256,address,uint) {
+    return (bidders[index].itemId,bidders[index].payAddress,bidders[index].bidAmount);
         
 }
 
 
-function getFinalPayment() public payable{
+function getFinalPayment() public payable {
     
 }
 
-function getBidItemsLength() public view returns (uint){
-    return itemData.length;
+function getBidItemsLength() public view returns (uint) {
+    return bidders.length;
 }
 
 
-function getTotalItemslength() public view returns (uint){
-    return itemBody.length;
+function onERC721Received(address operator, address from, uint256 tokenId, bytes memory data) public returns (bytes4) {
+    tokens.push(tokenId);
+    return this.onERC721Received.selector;
 }
-
-
 
 }

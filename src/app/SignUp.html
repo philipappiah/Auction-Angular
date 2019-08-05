@@ -1,0 +1,68 @@
+<style>
+    .example-form {
+        min-width: 150px;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .example-full-width {
+        width: 100%;
+    }
+</style>
+<h1 mat-dialog-title>Sign up</h1>
+<!-- <div mat-dialog-content>
+        <form class="example-form">
+            <mat-form-field class="example-full-width">
+                <input type="text" matInput placeholder="Enter your firstname">
+            </mat-form-field>
+            <br>
+            <mat-form-field class="example-full-width">
+                <input type="text" matInput placeholder="Enter your lastname">
+            </mat-form-field>
+            <b>
+            <mat-form-field class="example-full-width">
+              <input type="email" matInput placeholder="Enter your email" >
+            </mat-form-field>
+          <br>
+            <mat-form-field class="example-full-width">
+                <input type="password" matInput placeholder="Enter your password" >
+            </mat-form-field>
+            <b>
+            <mat-form-field class="example-full-width">
+               <input type="password" matInput placeholder="Confirm your password" >
+            </mat-form-field>
+            <b>
+        </form>
+   
+    </div> -->
+
+<form class="example-form" (submit)="getSignUpData()">
+    <div mat-dialog-content>
+
+        <mat-form-field class="example-full-width">
+            <input type="text" id="signupFirstname" matInput placeholder="Enter your firstname" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-full-width">
+            <input type="text" id="signupLastname" matInput placeholder="Enter your lastname" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-full-width">
+            <input type="email" id="signupEmail" matInput placeholder="Enter your email" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-full-width">
+            <input type="password" id="signupPass" matInput placeholder="Enter your password" required>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-full-width">
+            <input type="password" id="signupConPass" matInput placeholder="Confirm your password" required>
+        </mat-form-field>
+
+        <!--cdkFocusInitial-->
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button type="submit">Submit</button>
+        <button mat-button [mat-dialog-close]="data.animal" (click)="onNoClick()">Cancel</button>
+    </div>
+</form>

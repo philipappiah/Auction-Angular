@@ -4,10 +4,29 @@
 
         <!-- This fills the remaining space of the current row -->
         <span class="example-fill-remaining-space"></span>
-        <mat-icon svgIcon="thumbs-up" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
+        <span><mat-icon svgIcon="account-circle" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon></span>
         <span style="margin-right:2%" (click)="openDialog()">Sign In</span>
-        <span style="margin-right:3%">Sign Up</span>
+        <span style="margin-right:3%" (click)="openRegisterDialog()">Sign Up</span>
        
+</mat-toolbar>
+<mat-card style="width:100%">
+  <div style="margin-left:20%">
+  <b>How To Bid</b>
+  
+    <h5 style="margin-left: 10%">Step 1.<span style="margin-left: 1%">Login or Register<mat-icon svgIcon="account-circle"  aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon></span>
+      <h5 style="margin-left: 10%">Step 2.<span style="margin-left: 1%">Select the bid item<mat-icon svgIcon="bid"  aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon></span>
+        <h5 style="margin-left: 10%">Step 3.<span style="margin-left: 1%">Make a bid and wait for the results<mat-icon svgIcon="money"  aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon></span></h5></h5>
+      
+    </h5>
+  </div>
+    
+</mat-card>
+
+<mat-toolbar color="primary" class="footer" >
+  <span>Terms and conditions</span>
+  <span style="margin-left: 5%">FAQs</span>
+  <span style="margin-left: 5%"><mat-icon svgIcon="account_circle" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
+  </span>
 </mat-toolbar>
 
 
